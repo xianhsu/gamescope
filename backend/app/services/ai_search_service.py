@@ -136,9 +136,18 @@ class AISearchService:
         )
 
     async def _should_use_live(self, parsed, fts_docs, vec_docs) -> bool:
-        """Config-driven freshness gate (thresholds live in settings, not hard-coded)."""
-        if not settings.live_retrieval_enabled or not parsed.requires_freshness:
+        """Config-driven freshness gate (thresholds live in settings, not hard-coded).
+
+        - Live disabled entirely -> never.
+        - Time-sensitive query (latest/recent/today/最新/最近/…) -> ALWAYS enrich with the
+          live web, since the whole point of live retrieval is current information.
+        - Otherwise (a non-freshness query) only fall back to live when local coverage is
+          thin or stale, to save search-provider quota.
+        """
+        if not settings.live_retrieval_enabled:
             return False
+        if parsed.requires_freshness:
+            return True
         local_ids = {d.article_id for d in (*fts_docs, *vec_docs) if d.article_id}
         if len(local_ids) < settings.freshness_min_local_results:
             return True

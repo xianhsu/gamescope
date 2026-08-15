@@ -51,6 +51,9 @@ class Settings(BaseSettings):
     retrieval_context_limit: int = 8
     rrf_k: int = 60
     live_retrieval_enabled: bool = False
+    # Which live web provider to use when live retrieval is enabled: "null" | "serpapi".
+    live_retrieval_provider: str = "null"
+    serpapi_api_key: str = ""
     freshness_max_age_hours: int = 48
     freshness_min_local_results: int = 3
 

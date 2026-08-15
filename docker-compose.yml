@@ -39,6 +39,12 @@ services:
       LLM_BASE_URL: ${LLM_BASE_URL:-}
       EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-local}
       EMBEDDING_DIM: ${EMBEDDING_DIM:-1536}
+      # Live web retrieval (optional, internet search for AI Search). Reads from .env:
+      #   LIVE_RETRIEVAL_ENABLED=true  LIVE_RETRIEVAL_PROVIDER=serpapi  SERPAPI_API_KEY=<key>
+      # Leave as-is (disabled) to keep AI Search fully local. The key is NEVER hard-coded here.
+      LIVE_RETRIEVAL_ENABLED: ${LIVE_RETRIEVAL_ENABLED:-false}
+      LIVE_RETRIEVAL_PROVIDER: ${LIVE_RETRIEVAL_PROVIDER:-null}
+      SERPAPI_API_KEY: ${SERPAPI_API_KEY:-}
       # Seed sample + reference data on first start so the UI is never empty.
       SEED_ON_START: "true"
     ports:
