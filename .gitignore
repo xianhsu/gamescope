@@ -1,0 +1,27 @@
+# --- Python / backend ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.env
+.env.*
+!.env.example
+
+# --- Node / frontend ---
+node_modules/
+.next/
+out/
+npm-debug.log*
+frontend/.env*.local
+
+# --- Editor / OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- Local scratch (gh portable, temp, agent memory) ---
+.workbuddy/
