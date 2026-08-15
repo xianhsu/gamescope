@@ -34,7 +34,10 @@ export function ArticleBadges({
           Sample
         </Badge>
       ) : null}
-      {showCategory && article.category ? (
+      {/* Skip the category badge when it duplicates the official/rumor status badge. */}
+      {showCategory && article.category &&
+      article.category.toLowerCase() !== "official" &&
+      article.category.toLowerCase() !== "rumor" ? (
         <Badge variant="neutral">{humanize(article.category)}</Badge>
       ) : null}
       {article.platforms?.slice(0, 3).map((p) => (
