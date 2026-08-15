@@ -22,24 +22,22 @@ import type {
 } from "./types";
 
 /**
- * Resolve the API base URL. Server and browser can legitimately differ:
- * - In the browser, only `NEXT_PUBLIC_*` vars exist (inlined at build), and the API is reached
- *   via the host-mapped port (e.g. http://localhost:8000/api/v1).
- * - On the server (RSC / route handlers running inside the container), "localhost" would point at
- *   the frontend container itself, so we prefer a runtime-only internal URL when provided
- *   (e.g. http://backend:8000/api/v1 on the compose network).
+ * Resolve the API base URL at request time. This must NOT be a module-level constant because
+ * Next.js evaluates modules during build when only `NEXT_PUBLIC_*` vars are available; server
+ * components running inside Docker then end up with the public `localhost:8000` URL instead of
+ * the internal service URL (`backend:8000`).
  */
 function resolveBaseUrl(): string {
   const fallback = "http://localhost:8000/api/v1";
   if (typeof window === "undefined") {
-    const server =
-      process.env.API_INTERNAL_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? fallback;
-    return server.replace(/\/$/, "");
+    // Server-side rendering / route handlers run inside the compose network and should reach
+    // the backend by its service name when `API_INTERNAL_BASE_URL` is provided.
+    return (process.env.API_INTERNAL_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? fallback)
+      .replace(/\/$/, "");
   }
+  // Browser only sees build-time public vars.
   return (process.env.NEXT_PUBLIC_API_BASE_URL ?? fallback).replace(/\/$/, "");
 }
-
-export const API_BASE_URL = resolveBaseUrl();
 
 export class ApiError extends Error {
   readonly status: number;
@@ -78,7 +76,8 @@ interface RequestOptions {
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "GET", body, revalidate = 0, signal } = options;
-  const url = `${API_BASE_URL}${path}`;
+  const baseUrl = resolveBaseUrl();
+  const url = `${baseUrl}${path}`;
 
   const init: RequestInit & { next?: { revalidate: number | false } } = {
     method,
@@ -106,7 +105,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     throw new ApiError(
       0,
       "NETWORK_ERROR",
-      `Cannot reach the API at ${API_BASE_URL}. Is the backend running?`,
+      `Cannot reach the API at ${baseUrl}. Is the backend running?`,
       null,
     );
   }
