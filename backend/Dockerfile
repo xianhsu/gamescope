@@ -18,7 +18,9 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-RUN chmod +x /app/entrypoint.sh
+# Safety net: strip stray carriage returns (e.g. from Windows CRLF checkouts) so the
+# shebang resolves to /bin/bash inside the Linux container, not "/bin/bash\r".
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
 
