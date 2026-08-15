@@ -38,6 +38,20 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        // Inter 负责拉丁字符（含数字/标点），中文由系统 CJK 字体接管，
+        // 避免引入体积庞大的中文字库，同时保证各平台中文渲染一致且清晰。
+        sans: [
+          "var(--font-sans)",
+          '"PingFang SC"',
+          '"Hiragino Sans GB"',
+          '"Microsoft YaHei"',
+          '"Noto Sans CJK SC"',
+          '"Source Han Sans SC"',
+          "system-ui",
+          "sans-serif",
+        ],
+      },
       keyframes: {
         "fade-in": {
           from: { opacity: "0", transform: "translateY(4px)" },
