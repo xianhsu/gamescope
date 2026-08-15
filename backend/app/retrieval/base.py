@@ -19,13 +19,15 @@ class RetrievalFilters:
     game_id: int | None = None
     platform: str | None = None
     since: datetime | None = None
+    # Original time-range token (e.g. "7d"); live retrievers map it to provider recency filters.
+    time_range: str | None = None
 
     @classmethod
     def from_parsed(cls, *, game_id: int | None, platform: str | None, time_range: str | None):
         since = None
         if time_range in _TIME_RANGE_DAYS:
             since = datetime.now(UTC) - timedelta(days=_TIME_RANGE_DAYS[time_range])
-        return cls(game_id=game_id, platform=platform, since=since)
+        return cls(game_id=game_id, platform=platform, since=since, time_range=time_range)
 
 
 @dataclass
