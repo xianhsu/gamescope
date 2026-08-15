@@ -10,8 +10,8 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({
-  title = "Nothing here yet",
-  description = "There is no data to show for this view.",
+  title = "这里还没有内容",
+  description = "当前视图暂无数据可显示。",
   icon,
   className,
   action,
@@ -41,8 +41,8 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({
-  title = "Something went wrong",
-  message = "The request could not be completed.",
+  title = "出错了",
+  message = "请求无法完成。",
   requestId,
   isNetwork,
   className,
@@ -61,7 +61,7 @@ export function ErrorState({
       <p className="text-sm font-semibold text-amber-900">{title}</p>
       <p className="mt-1 max-w-md text-sm text-amber-800">{message}</p>
       {requestId ? (
-        <p className="mt-2 font-mono text-xs text-amber-700/80">request_id: {requestId}</p>
+        <p className="mt-2 font-mono text-xs text-amber-700/80">请求 ID：{requestId}</p>
       ) : null}
       {action ? <div className="mt-4">{action}</div> : null}
     </div>

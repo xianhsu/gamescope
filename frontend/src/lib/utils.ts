@@ -6,19 +6,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Human-friendly absolute date, e.g. "Aug 15, 2026". */
+/** 友好的绝对日期，例如 "2026年8月15日"。 */
 export function formatDate(value: string | null | undefined): string {
-  if (!value) return "Unknown date";
+  if (!value) return "未知日期";
   const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return "Unknown date";
-  return d.toLocaleDateString("en-US", {
+  if (Number.isNaN(d.getTime())) return "未知日期";
+  return d.toLocaleDateString("zh-CN", {
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric",
   });
 }
 
-/** Compact relative time, e.g. "3h ago", "2d ago". */
+/** 相对时间，例如 "3 小时前"、"2 天前"。 */
 export function relativeTime(value: string | null | undefined): string {
   if (!value) return "";
   const d = new Date(value);
@@ -28,10 +28,10 @@ export function relativeTime(value: string | null | undefined): string {
   const min = Math.round(sec / 60);
   const hr = Math.round(min / 60);
   const day = Math.round(hr / 24);
-  if (sec < 60) return "just now";
-  if (min < 60) return `${min}m ago`;
-  if (hr < 24) return `${hr}h ago`;
-  if (day < 30) return `${day}d ago`;
+  if (sec < 60) return "刚刚";
+  if (min < 60) return `${min} 分钟前`;
+  if (hr < 24) return `${hr} 小时前`;
+  if (day < 30) return `${day} 天前`;
   return formatDate(value);
 }
 
@@ -40,4 +40,18 @@ export function humanize(value: string): string {
   return value
     .replace(/[-_]/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** 文章分类的中文标签。 */
+const CATEGORY_LABELS: Record<string, string> = {
+  official: "官方",
+  media: "媒体",
+  rumor: "传闻",
+  update: "更新",
+  review: "评测",
+  deal: "优惠",
+};
+
+export function categoryLabel(value: string): string {
+  return CATEGORY_LABELS[value?.toLowerCase()] ?? humanize(value);
 }

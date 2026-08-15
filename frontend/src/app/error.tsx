@@ -16,17 +16,19 @@ export default function GlobalError({
     console.error(error);
   }, [error]);
 
-  const isNetwork = error.message.toLowerCase().includes("cannot reach the api");
+  const isNetwork =
+    error.message.toLowerCase().includes("cannot reach the api") ||
+    error.message.includes("无法连接");
 
   return (
     <div className="container py-16">
       <ErrorState
-        title="This page hit an error"
-        message={error.message || "An unexpected error occurred while rendering this page."}
+        title="页面发生错误"
+        message={error.message || "渲染此页面时发生未知错误。"}
         isNetwork={isNetwork}
         action={
           <Button onClick={reset} variant="outline" size="sm">
-            Try again
+            重试
           </Button>
         }
       />

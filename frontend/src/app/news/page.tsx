@@ -6,7 +6,7 @@ import { NewsFilters } from "@/components/news-filters";
 import { Pagination } from "@/components/ui/pagination";
 import { EmptyState, ErrorState } from "@/components/ui/states";
 
-export const metadata: Metadata = { title: "News" };
+export const metadata: Metadata = { title: "资讯" };
 export const dynamic = "force-dynamic";
 
 const PAGE_SIZE = 12;
@@ -53,9 +53,9 @@ export default async function NewsPage({
   return (
     <div className="container py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">Gaming news</h1>
+        <h1 className="text-2xl font-bold tracking-tight">游戏资讯</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Aggregated coverage across all sources. Filter and sort to narrow it down.
+          汇总所有来源的游戏报道。使用筛选与排序来缩小范围。
         </p>
       </div>
 
@@ -65,15 +65,15 @@ export default async function NewsPage({
 
       {error ? (
         <ErrorState
-          title="Could not load news"
-          message={error instanceof ApiError ? error.message : "Unexpected error."}
+          title="无法加载资讯"
+          message={error instanceof ApiError ? error.message : "发生未知错误。"}
           isNetwork={error instanceof ApiError && error.code === "NETWORK_ERROR"}
           requestId={error instanceof ApiError ? error.requestId : null}
         />
       ) : result && result.items.length > 0 ? (
         <>
           <p className="mb-4 text-sm text-muted-foreground">
-            {result.total.toLocaleString()} article{result.total === 1 ? "" : "s"}
+            {result.total.toLocaleString()} 篇文章
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {result.items.map((a) => (
@@ -91,8 +91,8 @@ export default async function NewsPage({
         </>
       ) : (
         <EmptyState
-          title="No matching articles"
-          description="Try clearing filters or searching for a different keyword."
+          title="没有匹配的文章"
+          description="尝试清除筛选条件或更换关键词搜索。"
         />
       )}
     </div>

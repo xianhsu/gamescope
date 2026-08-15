@@ -5,12 +5,11 @@ export function SiteFooter() {
     <footer className="mt-16 border-t bg-muted/30">
       <div className="container flex flex-col gap-2 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
         <p>
-          <span className="font-medium text-foreground">GameScope</span> — AI-powered gaming news
-          intelligence. Answers are grounded in retrieved sources.
+          <span className="font-medium text-foreground">GameScope</span> — AI 驱动的游戏资讯情报平台。所有回答均基于检索到的来源。
         </p>
         <div className="flex items-center gap-4">
           <Link href="/system" className="hover:text-foreground">
-            System status
+            系统状态
           </Link>
           <a
             href="/api/docs"
@@ -18,7 +17,7 @@ export function SiteFooter() {
             target="_blank"
             rel="noreferrer"
           >
-            API docs
+            API 文档
           </a>
         </div>
       </div>

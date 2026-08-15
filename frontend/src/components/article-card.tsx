@@ -48,7 +48,7 @@ export function ArticleCard({ article }: { article: ArticleListItem }) {
             href={`/news/${article.slug}`}
             className="inline-flex shrink-0 items-center gap-0.5 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100"
           >
-            Read <ArrowUpRight className="h-3 w-3" />
+            阅读 <ArrowUpRight className="h-3 w-3" />
           </Link>
         </div>
       </div>

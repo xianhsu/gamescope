@@ -3,13 +3,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, categoryLabel } from "@/lib/utils";
 
 const PLATFORMS = ["PC", "PlayStation", "Xbox", "Nintendo", "Mobile"];
 const CATEGORIES = ["official", "media", "rumor", "update", "review", "deal"];
 const SORTS = [
-  { value: "latest", label: "Latest" },
-  { value: "importance", label: "Importance" },
+  { value: "latest", label: "最新" },
+  { value: "importance", label: "重要度" },
 ];
 
 const selectClass =
@@ -64,7 +64,7 @@ export function NewsFilters() {
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Filter by keyword…"
+          placeholder="按关键词筛选…"
           className="h-9 w-full rounded-md border border-input bg-background pl-9 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
       </form>
@@ -73,9 +73,9 @@ export function NewsFilters() {
         value={platform}
         onChange={(e) => push({ platform: e.target.value || null })}
         className={selectClass}
-        aria-label="Platform"
+        aria-label="平台"
       >
-        <option value="">All platforms</option>
+        <option value="">全部平台</option>
         {PLATFORMS.map((p) => (
           <option key={p} value={p}>
             {p}
@@ -87,12 +87,12 @@ export function NewsFilters() {
         value={category}
         onChange={(e) => push({ category: e.target.value || null })}
         className={selectClass}
-        aria-label="Category"
+        aria-label="分类"
       >
-        <option value="">All categories</option>
+        <option value="">全部分类</option>
         {CATEGORIES.map((c) => (
           <option key={c} value={c}>
-            {c[0].toUpperCase() + c.slice(1)}
+            {categoryLabel(c)}
           </option>
         ))}
       </select>
@@ -101,11 +101,11 @@ export function NewsFilters() {
         value={sort}
         onChange={(e) => push({ sort: e.target.value === "latest" ? null : e.target.value })}
         className={selectClass}
-        aria-label="Sort"
+        aria-label="排序"
       >
         {SORTS.map((s) => (
           <option key={s.value} value={s.value}>
-            Sort: {s.label}
+            {s.label}
           </option>
         ))}
       </select>
@@ -121,7 +121,7 @@ export function NewsFilters() {
           )}
         >
           <X className="h-3.5 w-3.5" />
-          Clear
+          清除
         </button>
       ) : null}
     </div>

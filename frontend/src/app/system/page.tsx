@@ -37,16 +37,16 @@ export default async function SystemPage() {
   return (
     <div className="container py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight">System status</h1>
+        <h1 className="text-2xl font-bold tracking-tight">系统状态</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Real, live statistics from the pipeline — nothing here is faked.
+          来自流水线的真实实时统计数据——此处没有任何伪造内容。
         </p>
       </div>
 
       {allDown ? (
         <ErrorState
-          title="Backend unavailable"
-          message="Could not reach any system endpoint. Make sure the API is running."
+          title="后端不可用"
+          message="无法连接到任何系统接口。请确保 API 正在运行。"
           isNetwork
         />
       ) : (
@@ -67,9 +67,15 @@ function statusVariant(status: string): "official" | "rumor" | "neutral" {
   return "neutral";
 }
 
+const STATUS_LABELS: Record<string, string> = {
+  ok: "正常",
+  degraded: "降级",
+  down: "故障",
+};
+
 function HealthBar({ health }: { health: HealthResponse | null }) {
   if (!health) {
-    return <ErrorState title="Health check failed" message="Could not read /health." isNetwork />;
+    return <ErrorState title="健康检查失败" message="无法读取 /health。" isNetwork />;
   }
   return (
     <Card className="p-5">
@@ -81,7 +87,7 @@ function HealthBar({ health }: { health: HealthResponse | null }) {
             <Activity className="h-5 w-5 text-amber-600" />
           )}
           <span className="font-semibold">
-            System {health.status === "ok" ? "healthy" : "degraded"}
+            {health.status === "ok" ? "系统运行正常" : "系统性能下降"}
           </span>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -101,7 +107,7 @@ function HealthBar({ health }: { health: HealthResponse | null }) {
                 <p className="truncate text-xs text-muted-foreground">{c.detail}</p>
               ) : null}
             </div>
-            <Badge variant={statusVariant(c.status)}>{c.status}</Badge>
+            <Badge variant={statusVariant(c.status)}>{STATUS_LABELS[c.status] ?? c.status}</Badge>
           </div>
         ))}
       </div>
@@ -111,17 +117,17 @@ function HealthBar({ health }: { health: HealthResponse | null }) {
 
 function StatsGrid({ stats }: { stats: SystemStats }) {
   const items = [
-    { icon: FileText, label: "Articles", value: stats.articles_total },
-    { icon: Brain, label: "Summarized", value: stats.articles_summarized },
-    { icon: Boxes, label: "Embeddings", value: stats.embeddings_generated },
-    { icon: Radio, label: "Active sources", value: stats.sources_active },
-    { icon: Gamepad2, label: "Games", value: stats.games_total },
-    { icon: Search, label: "Searches", value: stats.searches_total },
+    { icon: FileText, label: "文章", value: stats.articles_total },
+    { icon: Brain, label: "已总结", value: stats.articles_summarized },
+    { icon: Boxes, label: "向量嵌入", value: stats.embeddings_generated },
+    { icon: Radio, label: "活跃来源", value: stats.sources_active },
+    { icon: Gamepad2, label: "游戏", value: stats.games_total },
+    { icon: Search, label: "搜索次数", value: stats.searches_total },
   ];
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        Pipeline statistics
+        流水线统计
       </h2>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {items.map((it) => (
@@ -134,10 +140,10 @@ function StatsGrid({ stats }: { stats: SystemStats }) {
       </div>
       {stats.last_ingest_at ? (
         <p className="mt-3 text-xs text-muted-foreground">
-          Last ingest {relativeTime(stats.last_ingest_at)} ({formatDate(stats.last_ingest_at)})
+          最近一次摄取 {relativeTime(stats.last_ingest_at)}（{formatDate(stats.last_ingest_at)}）
         </p>
       ) : (
-        <p className="mt-3 text-xs text-muted-foreground">No ingestion has run yet.</p>
+        <p className="mt-3 text-xs text-muted-foreground">尚未运行摄取任务。</p>
       )}
     </div>
   );
@@ -147,7 +153,7 @@ function Providers({ stats }: { stats: SystemStats }) {
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        AI configuration
+        AI 配置
       </h2>
       <div className="grid gap-3 sm:grid-cols-2">
         <Card className="flex items-center gap-3 p-4">
@@ -155,7 +161,7 @@ function Providers({ stats }: { stats: SystemStats }) {
             <Cpu className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-xs text-muted-foreground">LLM provider</p>
+            <p className="text-xs text-muted-foreground">大模型供应商</p>
             <p className="font-semibold capitalize">{stats.llm_provider}</p>
           </div>
         </Card>
@@ -164,14 +170,13 @@ function Providers({ stats }: { stats: SystemStats }) {
             <Database className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-xs text-muted-foreground">Embedding provider</p>
+            <p className="text-xs text-muted-foreground">向量嵌入供应商</p>
             <p className="font-semibold capitalize">{stats.embedding_provider}</p>
           </div>
         </Card>
       </div>
       <p className="mt-2 text-xs text-muted-foreground">
-        Providers are abstracted — the platform runs on a deterministic local provider without an API
-        key, and switches to a hosted model when configured.
+        供应商采用了抽象设计——平台默认使用确定性的本地供应商，无需 API 密钥；配置后也可切换到托管的云端模型。
       </p>
     </div>
   );
@@ -181,14 +186,14 @@ function Jobs({ jobs, failed }: { jobs: JobOut[] | null; failed: boolean }) {
   return (
     <div>
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        Recent ingestion jobs
+        最近的摄取任务
       </h2>
       {failed ? (
-        <ErrorState message="Could not load recent jobs." />
+        <ErrorState message="无法加载最近的摄取任务。" />
       ) : !jobs || jobs.length === 0 ? (
         <EmptyState
-          title="No jobs yet"
-          description="Ingestion jobs will appear here once the pipeline runs."
+          title="暂无任务"
+          description="流水线运行后，摄取任务会显示在这里。"
         />
       ) : (
         <Card className="divide-y overflow-hidden p-0">
@@ -204,16 +209,16 @@ function Jobs({ jobs, failed }: { jobs: JobOut[] | null; failed: boolean }) {
                 )}
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">
-                    {j.source_name ?? `Source #${j.source_id ?? "?"}`}
+                    {j.source_name ?? `来源 #${j.source_id ?? "?"}`}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {relativeTime(j.started_at)} · {j.articles_found} found · {j.articles_stored}{" "}
-                    stored · {j.articles_failed} failed
+                    {relativeTime(j.started_at)} · 发现 {j.articles_found} 篇 · 已存储{" "}
+                    {j.articles_stored} 篇 · 失败 {j.articles_failed} 篇
                   </p>
                 </div>
               </div>
               <Badge variant={j.status === "success" ? "official" : j.status === "failed" ? "rumor" : "neutral"}>
-                {j.status}
+                {j.status === "success" ? "成功" : j.status === "failed" ? "失败" : "进行中"}
               </Badge>
             </div>
           ))}

@@ -26,12 +26,12 @@ export function Pagination({ page, pageSize, total, hrefFor }: PaginationProps) 
     "inline-flex h-9 min-w-9 items-center justify-center rounded-md border px-3 text-sm transition-colors";
 
   return (
-    <nav className="flex flex-wrap items-center justify-center gap-1.5" aria-label="Pagination">
+    <nav className="flex flex-wrap items-center justify-center gap-1.5" aria-label="分页">
       <PagerLink
         href={hrefFor(page - 1)}
         disabled={page <= 1}
         className={linkBase}
-        aria-label="Previous page"
+        aria-label="上一页"
       >
         <ChevronLeft className="h-4 w-4" />
       </PagerLink>
@@ -60,7 +60,7 @@ export function Pagination({ page, pageSize, total, hrefFor }: PaginationProps) 
         href={hrefFor(page + 1)}
         disabled={page >= totalPages}
         className={linkBase}
-        aria-label="Next page"
+        aria-label="下一页"
       >
         <ChevronRight className="h-4 w-4" />
       </PagerLink>

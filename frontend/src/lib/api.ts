@@ -105,14 +105,14 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     throw new ApiError(
       0,
       "NETWORK_ERROR",
-      `Cannot reach the API at ${baseUrl}. Is the backend running?`,
+      `无法连接到 API（${baseUrl}）。后端是否在运行？`,
       null,
     );
   }
 
   if (!res.ok) {
     let code = "HTTP_ERROR";
-    let message = `Request failed with status ${res.status}`;
+    let message = `请求失败，状态码 ${res.status}`;
     let requestId: string | null = res.headers.get("x-request-id");
     try {
       const data = (await res.json()) as { error?: { code?: string; message?: string; request_id?: string } };

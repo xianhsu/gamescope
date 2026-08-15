@@ -1,6 +1,6 @@
 import { BadgeCheck, FlaskConical, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { humanize } from "@/lib/utils";
+import { categoryLabel } from "@/lib/utils";
 import type { ArticleListItem } from "@/lib/types";
 
 /**
@@ -19,26 +19,26 @@ export function ArticleBadges({
       {article.is_official ? (
         <Badge variant="official">
           <BadgeCheck className="h-3 w-3" />
-          Official
+          官方
         </Badge>
       ) : null}
       {article.is_rumor ? (
         <Badge variant="rumor">
           <FlaskConical className="h-3 w-3" />
-          Rumor
+          传闻
         </Badge>
       ) : null}
       {article.is_sample ? (
         <Badge variant="sample">
           <Sparkles className="h-3 w-3" />
-          Sample
+          示例
         </Badge>
       ) : null}
       {/* Skip the category badge when it duplicates the official/rumor status badge. */}
       {showCategory && article.category &&
       article.category.toLowerCase() !== "official" &&
       article.category.toLowerCase() !== "rumor" ? (
-        <Badge variant="neutral">{humanize(article.category)}</Badge>
+        <Badge variant="neutral">{categoryLabel(article.category)}</Badge>
       ) : null}
       {article.platforms?.slice(0, 3).map((p) => (
         <Badge key={p} variant="outline">

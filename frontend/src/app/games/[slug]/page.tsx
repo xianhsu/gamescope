@@ -23,7 +23,7 @@ export async function generateMetadata({
     const game = await api.game(params.slug);
     return { title: game.name };
   } catch {
-    return { title: "Game" };
+    return { title: "游戏" };
   }
 }
 
@@ -45,8 +45,8 @@ export default async function GameDetailPage({
     return (
       <div className="container py-10">
         <ErrorState
-          title="Could not load this game"
-          message={err instanceof ApiError ? err.message : "Unexpected error."}
+          title="无法加载该游戏"
+          message={err instanceof ApiError ? err.message : "发生未知错误。"}
           isNetwork={err instanceof ApiError && err.code === "NETWORK_ERROR"}
           requestId={err instanceof ApiError ? err.requestId : null}
         />
@@ -71,7 +71,7 @@ export default async function GameDetailPage({
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        All games
+        全部游戏
       </Link>
 
       <div className="mb-8 flex items-start gap-4">
@@ -83,17 +83,17 @@ export default async function GameDetailPage({
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             {game.developer ? <span>{game.developer}</span> : null}
             {game.publisher ? <span>· {game.publisher}</span> : null}
-            {game.release_date ? <span>· Released {formatDate(game.release_date)}</span> : null}
+            {game.release_date ? <span>· 发售于 {formatDate(game.release_date)}</span> : null}
             <Badge variant="neutral">{game.article_count} articles</Badge>
           </div>
         </div>
       </div>
 
-      <h2 className="mb-4 text-xl font-bold tracking-tight">Coverage</h2>
+      <h2 className="mb-4 text-xl font-bold tracking-tight">相关报道</h2>
 
       {newsError ? (
         <ErrorState
-          message={newsError instanceof ApiError ? newsError.message : "Failed to load coverage."}
+          message={newsError instanceof ApiError ? newsError.message : "加载报道失败。"}
           isNetwork={newsError instanceof ApiError && newsError.code === "NETWORK_ERROR"}
         />
       ) : news && news.items.length > 0 ? (
@@ -114,8 +114,8 @@ export default async function GameDetailPage({
         </>
       ) : (
         <EmptyState
-          title="No coverage yet"
-          description="There are no articles linked to this game yet."
+          title="暂无报道"
+          description="暂无与该游戏关联的文章。"
         />
       )}
     </div>

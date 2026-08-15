@@ -20,19 +20,19 @@ import { GroundedAnswer } from "@/components/grounded-answer";
 import { formatDate, relativeTime } from "@/lib/utils";
 
 const EXAMPLES = [
-  "What's the latest on the next Grand Theft Auto?",
-  "Any recent PlayStation exclusives announced?",
-  "Summarize rumors about Nintendo's next console",
-  "Recent PC game deals worth knowing about",
+  "下一款《侠盗猎车手》最近有什么消息？",
+  "近期公布了哪些 PlayStation 独占游戏？",
+  "总结一下关于任天堂次世代主机的传闻",
+  "近期有哪些值得关注的 PC 游戏优惠",
 ];
 
 const PIPELINE = [
-  "Query understanding",
-  "Metadata filtering",
-  "FTS + Vector retrieval",
-  "Merge · dedup · rerank",
-  "Context builder",
-  "LLM answer + citations",
+  "查询理解",
+  "元数据过滤",
+  "全文 + 向量检索",
+  "合并 · 去重 · 重排",
+  "上下文构建",
+  "大模型作答 + 引用",
 ];
 
 export default function AiSearchPage() {
@@ -52,7 +52,7 @@ export default function AiSearchPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.aiSearch(trimmed, undefined, controller.signal);
+      const res = await api.aiSearch(trimmed, "zh", controller.signal);
       setResult(res);
     } catch (err) {
       if (err instanceof ApiError) setError(err);
@@ -68,12 +68,11 @@ export default function AiSearchPage() {
       <div className="mb-6">
         <div className="mb-2 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
           <Sparkles className="h-4 w-4" />
-          AI Search
+          AI 搜索
         </div>
-        <h1 className="text-2xl font-bold tracking-tight">Ask about gaming news</h1>
+        <h1 className="text-2xl font-bold tracking-tight">询问游戏资讯</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Answers are generated <strong>only</strong> from retrieved articles and cite every source.
-          If nothing relevant is found, it says so instead of guessing.
+          回答<strong>仅</strong>基于检索到的文章生成，并引用每一条来源。若没有找到相关内容，它会如实说明，而不是猜测。
         </p>
       </div>
 
@@ -90,13 +89,13 @@ export default function AiSearchPage() {
             autoFocus
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g. What's new with the next Zelda game?"
-            className="h-11 w-full rounded-md border border-input bg-background pl-10 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
+          placeholder="例如：下一款塞尔达游戏有什么新消息？"
+          className="h-11 w-full rounded-md border border-input bg-background pl-10 pr-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        />
         </div>
         <Button type="submit" size="lg" disabled={loading || query.trim().length < 2}>
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-          Ask
+          提问
         </Button>
       </form>
 
@@ -122,13 +121,13 @@ export default function AiSearchPage() {
       {error ? (
         <div className="mt-6">
           <ErrorState
-            title="AI search failed"
+            title="AI 搜索失败"
             message={error.message}
             isNetwork={error.code === "NETWORK_ERROR"}
             requestId={error.requestId}
             action={
               <Button variant="outline" size="sm" onClick={() => void run(query)}>
-                Retry
+                重试
               </Button>
             }
           />
@@ -145,7 +144,7 @@ function LoadingPipeline() {
     <Card className="mt-6 p-5">
       <div className="mb-4 flex items-center gap-2 text-sm font-medium">
         <Loader2 className="h-4 w-4 animate-spin text-primary" />
-        Running retrieval pipeline…
+        正在运行检索流水线…
       </div>
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-2 text-xs text-muted-foreground">
         {PIPELINE.map((step, i) => (
@@ -172,29 +171,29 @@ function ResultView({ result }: { result: AISearchResponse }) {
       <Card className="p-4">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Query understanding
+            查询理解
           </p>
           {m.used_live ? (
-            <Badge variant="default">Live sources used</Badge>
+            <Badge variant="default">已使用实时来源</Badge>
           ) : (
-            <Badge variant="neutral">Indexed sources</Badge>
+            <Badge variant="neutral">已索引来源</Badge>
           )}
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {m.intent ? <Meta k="intent" v={m.intent} /> : null}
-          {m.game ? <Meta k="game" v={m.game} /> : null}
-          {m.platform ? <Meta k="platform" v={m.platform} /> : null}
-          {m.topic ? <Meta k="topic" v={m.topic} /> : null}
-          {m.time_range ? <Meta k="time" v={m.time_range} /> : null}
-          <Meta k="lang" v={m.language} />
-          {m.requires_freshness ? <Meta k="freshness" v="required" /> : null}
+          {m.intent ? <Meta k="意图" v={m.intent} /> : null}
+          {m.game ? <Meta k="游戏" v={m.game} /> : null}
+          {m.platform ? <Meta k="平台" v={m.platform} /> : null}
+          {m.topic ? <Meta k="主题" v={m.topic} /> : null}
+          {m.time_range ? <Meta k="时间" v={m.time_range} /> : null}
+          <Meta k="语言" v={m.language} />
+          {m.requires_freshness ? <Meta k="时效性" v="需要" /> : null}
         </div>
         <div className="mt-3 flex flex-wrap gap-3 border-t pt-3 text-xs text-muted-foreground">
-          <RetrievalStat label="FTS" value={m.retrieval.fts} />
-          <RetrievalStat label="Vector" value={m.retrieval.vector} />
-          {m.retrieval.live > 0 ? <RetrievalStat label="Live" value={m.retrieval.live} /> : null}
-          <RetrievalStat label="Fused" value={m.retrieval.fused} />
-          <RetrievalStat label="Reranked" value={m.retrieval.reranked} />
+          <RetrievalStat label="全文检索" value={m.retrieval.fts} />
+          <RetrievalStat label="向量" value={m.retrieval.vector} />
+          {m.retrieval.live > 0 ? <RetrievalStat label="实时" value={m.retrieval.live} /> : null}
+          <RetrievalStat label="融合" value={m.retrieval.fused} />
+          <RetrievalStat label="重排" value={m.retrieval.reranked} />
         </div>
       </Card>
 
@@ -202,12 +201,11 @@ function ResultView({ result }: { result: AISearchResponse }) {
       <Card className="p-6">
         <div className="mb-3 flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
-          <h2 className="text-sm font-semibold">Answer</h2>
+          <h2 className="text-sm font-semibold">回答</h2>
         </div>
         <GroundedAnswer answer={result.answer} sources={result.sources} />
         <p className="mt-4 text-xs text-muted-foreground">
-          Generated {relativeTime(result.generated_at)} · grounded in {result.sources.length} source
-          {result.sources.length === 1 ? "" : "s"}
+          生成于 {relativeTime(result.generated_at)} · 基于 {result.sources.length} 条来源
         </p>
       </Card>
 
@@ -215,7 +213,7 @@ function ResultView({ result }: { result: AISearchResponse }) {
       {result.sources.length > 0 ? (
         <div>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Sources
+            来源
           </h2>
           <div className="space-y-2">
             {result.sources.map((s) => (
@@ -248,13 +246,13 @@ function ResultView({ result }: { result: AISearchResponse }) {
                     {s.is_official ? (
                       <Badge variant="official">
                         <BadgeCheck className="h-3 w-3" />
-                        Official
+                        官方
                       </Badge>
                     ) : null}
                     {s.is_rumor ? (
                       <Badge variant="rumor">
                         <FlaskConical className="h-3 w-3" />
-                        Rumor
+                        传闻
                       </Badge>
                     ) : null}
                   </div>
@@ -269,7 +267,7 @@ function ResultView({ result }: { result: AISearchResponse }) {
       {result.related_articles.length > 0 ? (
         <div>
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Related articles
+            相关文章
           </h2>
           <div className="flex flex-wrap gap-2">
             {result.related_articles.map((r) => (

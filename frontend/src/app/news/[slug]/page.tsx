@@ -22,7 +22,7 @@ export async function generateMetadata({
     const article = await api.article(params.slug);
     return { title: article.title, description: article.summary ?? undefined };
   } catch {
-    return { title: "Article" };
+    return { title: "文章" };
   }
 }
 
@@ -35,8 +35,8 @@ export default async function ArticleDetailPage({ params }: { params: { slug: st
     return (
       <div className="container py-10">
         <ErrorState
-          title="Could not load this article"
-          message={err instanceof ApiError ? err.message : "Unexpected error."}
+          title="无法加载该文章"
+          message={err instanceof ApiError ? err.message : "发生未知错误。"}
           isNetwork={err instanceof ApiError && err.code === "NETWORK_ERROR"}
           requestId={err instanceof ApiError ? err.requestId : null}
         />
@@ -51,7 +51,7 @@ export default async function ArticleDetailPage({ params }: { params: { slug: st
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" />
-        Back to news
+        返回资讯
       </Link>
 
       <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -69,8 +69,7 @@ export default async function ArticleDetailPage({ params }: { params: { slug: st
 
       {article.is_sample ? (
         <p className="mt-4 rounded-md border border-dashed border-primary/40 bg-primary/5 px-4 py-3 text-sm text-primary">
-          This is <strong>sample/seed data</strong> included for demonstration — it is clearly
-          labeled and not presented as a real, live news item.
+          这是用于演示的<strong>示例/种子数据</strong>——它已明确标注，不会作为真实的实时新闻呈现。
         </p>
       ) : null}
 
@@ -94,9 +93,9 @@ export default async function ArticleDetailPage({ params }: { params: { slug: st
       {/* Copyright-safe: we only store an excerpt + summary and link out to the source. */}
       <Card className="mt-8 flex flex-col gap-3 bg-muted/40 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-medium">Read the full story at the source</p>
+          <p className="text-sm font-medium">在来源处阅读完整报道</p>
           <p className="text-xs text-muted-foreground">
-            GameScope stores only an excerpt and links to the original publisher.
+            GameScope 仅存储摘要并链接到原始发布方。
           </p>
         </div>
         <a
@@ -105,7 +104,7 @@ export default async function ArticleDetailPage({ params }: { params: { slug: st
           rel="noreferrer"
           className={cn(buttonVariants({ size: "sm" }), "shrink-0")}
         >
-          Open original
+          打开原文
           <ExternalLink className="h-4 w-4" />
         </a>
       </Card>
@@ -113,7 +112,7 @@ export default async function ArticleDetailPage({ params }: { params: { slug: st
       {article.games.length > 0 ? (
         <div className="mt-8">
           <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Related games
+            相关游戏
           </h2>
           <div className="flex flex-wrap gap-2">
             {article.games.map((g) => (
@@ -129,7 +128,7 @@ export default async function ArticleDetailPage({ params }: { params: { slug: st
 
       {article.related.length > 0 ? (
         <div className="mt-12">
-          <h2 className="mb-4 text-xl font-bold tracking-tight">Related articles</h2>
+          <h2 className="mb-4 text-xl font-bold tracking-tight">相关文章</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             {article.related.slice(0, 4).map((a) => (
               <ArticleCard key={a.id} article={a} />

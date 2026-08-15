@@ -8,17 +8,17 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: {
-    default: "GameScope — AI Gaming News Intelligence",
+    default: "GameScope — AI 游戏资讯情报平台",
     template: "%s · GameScope",
   },
   description:
-    "GameScope aggregates gaming news and answers questions with grounded, cited AI search over a hybrid retrieval pipeline.",
+    "GameScope 聚合游戏资讯，并通过基于混合检索流水线的、带引用来源的可信 AI 搜索来回答你的问题。",
   metadataBase: new URL("http://localhost:3000"),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="zh-CN" className={inter.variable}>
       <body className="min-h-screen font-sans antialiased">
         <SiteHeader />
         <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>

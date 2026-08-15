@@ -46,11 +46,11 @@ export default async function HomePage() {
       {anyError ? (
         <section className="container py-10">
           <ErrorState
-            title="Backend unavailable"
+            title="后端不可用"
             message={
               firstError instanceof ApiError
                 ? firstError.message
-                : "Could not load home data from the API."
+                : "无法从 API 加载首页数据。"
             }
             isNetwork={firstError instanceof ApiError && firstError.code === "NETWORK_ERROR"}
             requestId={firstError instanceof ApiError ? firstError.requestId : null}
@@ -61,15 +61,15 @@ export default async function HomePage() {
           {/* Trending games */}
           <section className="container py-10">
             <SectionHeader
-              title="Trending games"
-              description="Games with the most recent coverage in the index."
+              title="热门游戏"
+              description="索引中近期报道最多的游戏。"
               href="/games"
-              linkLabel="All games"
+              linkLabel="全部游戏"
             />
             {trending.status === "rejected" ? (
-              <ErrorState message="Failed to load trending games." />
+              <ErrorState message="加载热门游戏失败。" />
             ) : trendingGames.length === 0 ? (
-              <EmptyState title="No games yet" description="Run ingestion to populate games." />
+              <EmptyState title="暂无游戏" description="运行数据摄取以填充游戏列表。" />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {trendingGames.map((g) => (
@@ -78,7 +78,7 @@ export default async function HomePage() {
                       <div className="min-w-0">
                         <p className="truncate font-semibold">{g.name}</p>
                         <p className="truncate text-xs text-muted-foreground">
-                          {g.developer ?? "Unknown developer"}
+                          {g.developer ?? "未知开发商"}
                         </p>
                       </div>
                       <Badge variant="neutral">{g.article_count} articles</Badge>
@@ -92,17 +92,17 @@ export default async function HomePage() {
           {/* Latest news */}
           <section className="container py-10">
             <SectionHeader
-              title="Latest news"
-              description="Freshly ingested coverage across all sources."
+              title="最新资讯"
+              description="来自所有来源的实时入库报道。"
               href="/news"
-              linkLabel="All news"
+              linkLabel="全部资讯"
             />
             {latest.status === "rejected" ? (
-              <ErrorState message="Failed to load the latest news." />
+              <ErrorState message="加载最新资讯失败。" />
             ) : latestItems.length === 0 ? (
               <EmptyState
-                title="No articles yet"
-                description="The pipeline has not ingested any news yet."
+                title="暂无文章"
+                description="流水线尚未摄取任何新闻。"
               />
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -124,34 +124,33 @@ function Hero({ stats }: { stats: SystemStats | null }) {
   return (
     <section className="app-gradient border-b">
       <div className="container flex flex-col items-center py-16 text-center">
-        <Badge variant="default" className="mb-4">
+          <Badge variant="default" className="mb-4">
           <Sparkles className="h-3 w-3" />
-          Grounded RAG · Hybrid Retrieval
+          检索增强生成 · 混合检索
         </Badge>
         <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-          Gaming news you can <span className="text-primary">ask questions</span> about
+          可以<span className="text-primary">提问</span>的游戏资讯
         </h1>
         <p className="mt-4 max-w-2xl text-balance text-muted-foreground">
-          GameScope aggregates gaming news from multiple sources and answers your questions with
-          cited, source-grounded AI — every claim traces back to a real article.
+          GameScope 从多个来源聚合游戏资讯，并用带引用来源、基于检索的 AI 来回答你的问题——每一条陈述都能追溯到真实文章。
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link href="/ai" className={cn(buttonVariants({ size: "lg" }))}>
             <Sparkles className="h-4 w-4" />
-            Try AI Search
+            试用 AI 搜索
           </Link>
           <Link href="/news" className={cn(buttonVariants({ variant: "outline", size: "lg" }))}>
-            Browse news
+            浏览资讯
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
         {stats ? (
           <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            <Stat label="Articles" value={stats.articles_total} />
-            <Stat label="Embeddings" value={stats.embeddings_generated} />
-            <Stat label="Sources" value={stats.sources_active} />
-            <Stat label="Games" value={stats.games_total} />
+            <Stat label="文章" value={stats.articles_total} />
+            <Stat label="向量嵌入" value={stats.embeddings_generated} />
+            <Stat label="来源" value={stats.sources_active} />
+            <Stat label="游戏" value={stats.games_total} />
           </div>
         ) : null}
       </div>
@@ -200,18 +199,18 @@ function HowItWorks() {
   const items = [
     {
       icon: Search,
-      title: "Query understanding",
-      body: "Each question is parsed for game, platform, topic and freshness before retrieval.",
+      title: "查询理解",
+      body: "在检索之前，每个问题都会被解析出游戏、平台、主题与时效性等要素。",
     },
     {
       icon: Layers,
-      title: "Hybrid retrieval",
-      body: "Full-text search and vector similarity are fused with Reciprocal Rank Fusion.",
+      title: "混合检索",
+      body: "全文检索与向量相似度通过互易排序融合（RRF）进行整合。",
     },
     {
       icon: Database,
-      title: "Grounded answer",
-      body: "The LLM answers only from retrieved context and cites every source used.",
+      title: "可信回答",
+      body: "大模型仅基于检索到的上下文作答，并引用所用到的每一条来源。",
     },
   ];
   return (

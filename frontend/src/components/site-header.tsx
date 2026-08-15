@@ -6,11 +6,11 @@ import { Gamepad2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
-  { href: "/", label: "Home", exact: true },
-  { href: "/news", label: "News" },
-  { href: "/games", label: "Games" },
-  { href: "/ai", label: "AI Search" },
-  { href: "/system", label: "System" },
+  { href: "/", label: "首页", exact: true },
+  { href: "/news", label: "资讯" },
+  { href: "/games", label: "游戏" },
+  { href: "/ai", label: "AI 搜索" },
+  { href: "/system", label: "系统" },
 ];
 
 export function SiteHeader() {
